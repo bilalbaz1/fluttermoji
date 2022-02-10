@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttermoji/custom_icon_icons.dart';
 import 'package:fluttermoji/fluttermoji.dart';
 import 'package:flutter/foundation.dart' show TargetPlatform;
 
@@ -128,18 +129,47 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class NewPage extends StatelessWidget {
+class NewPage extends StatefulWidget {
   const NewPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var platform = Theme.of(context).platform;
-    var isWeb = platform != TargetPlatform.android ||
-        platform != TargetPlatform.iOS ||
-        platform != TargetPlatform.fuchsia;
+  State<NewPage> createState() => _NewPageState();
+}
 
+class _NewPageState extends State<NewPage> {
+  FluttermojiController controller = FluttermojiController();
+  final FluttermojiFunctions fluttermojiFunctions = FluttermojiFunctions();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.init();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () async {
+              var a = controller.fluttermoji;
+              var b = FluttermojiFunctions();
+
+              // b.decodeFluttermojifromString();
+              print(a);
+              print(b.encodeMySVGtoMap());
+
+              print(" !!!!!! ");
+
+              print(" ******** ");
+
+              print(await b.encodeMySVGtoString());
+            },
+            icon: Icon(CustomIcon.coins),
+          ),
+        ],
+      ),
       body: ListView(
         children: [
           Padding(
@@ -151,9 +181,12 @@ class NewPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 30),
             child: FluttermojiCustomizer(
-              //scaffoldHeight: 400,
-              showSaveWidget: true,
-               scaffoldWidth: isWeb ? 600 : 0,
+              satinAlinanList: [
+                SatinAlinanAvatarModel(resimYol: "topType:10"),
+                SatinAlinanAvatarModel(resimYol: "accessoriesType:2"),
+                SatinAlinanAvatarModel(resimYol: "facialHairColor:3"),
+                SatinAlinanAvatarModel(resimYol: "eyeType:0"),
+              ],
             ),
           ),
         ],

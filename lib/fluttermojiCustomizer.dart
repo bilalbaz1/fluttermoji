@@ -1,32 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttermoji/custom_icon_icons.dart';
+import './satinAlinanModel.dart';
 import 'fluttermoji_assets/fluttermojimodel.dart';
 import 'package:get/get.dart';
 import 'fluttermojiController.dart';
 
-/// This widget provides a UI for customizing the Fluttermoji
-///
-/// Accepts a [outerTextTitle] which defaults to "Customize:"
-///
-/// Accepts an optional [scaffoldHeight] and [scaffoldWidth].
-/// When using in landscape mode, it is advised to pass a [scaffoldWidth] to the widget
-///
-/// Adapts to the enclosing MaterialApp's dark theme settings
-///
-/// It is advised that a [FluttermojiCircleAvatar] also be present in the same page.
 class FluttermojiCustomizer extends StatefulWidget {
-  final String outerTitleText;
-  final double scaffoldHeight;
-  final double scaffoldWidth;
-  final bool showSaveWidget;
-  FluttermojiCustomizer(
-      {Key? key,
-      this.outerTitleText = 'Customize :',
-      this.scaffoldHeight = 0.0,
-      this.showSaveWidget = true,
-      this.scaffoldWidth = 0.0})
-      : super(key: key);
+  List<SatinAlinanAvatarModel> satinAlinanList;
+
+  FluttermojiCustomizer({
+    Key? key,
+    required this.satinAlinanList,
+  }) : super(key: key);
 
   @override
   _FluttermojiCustomizerState createState() => _FluttermojiCustomizerState();
@@ -36,8 +23,91 @@ class _FluttermojiCustomizerState extends State<FluttermojiCustomizer>
     with SingleTickerProviderStateMixin {
   late FluttermojiController fluttermojiController;
   late TabController tabController;
-  var heightFactor = 0.4;
-  var widthFactor = 0.95;
+  var heightFactor = 0.48;
+  var widthFactor = 0.98;
+
+  List<ExpandedFluttermojiCardItem> attributesListe = [
+    ExpandedFluttermojiCardItem(
+      iconAsset: "attributeicons/skin_1.png",
+      title: "Skin",
+      key: "skinColor",
+      icon: CustomIcon.beauty_treatment,
+      color: Colors.black87,
+    ),
+    ExpandedFluttermojiCardItem(
+      iconAsset: "attributeicons/skin_1.png",
+      title: "Hairstyle",
+      key: "topType",
+      icon: CustomIcon.hair_cutting,
+      color: Colors.black87,
+    ),
+    ExpandedFluttermojiCardItem(
+      iconAsset: "attributeicons/skin_1.png",
+      title: "Hair Colour",
+      key: "hairColor",
+      icon: CustomIcon.hair_dye,
+      color: Colors.black87,
+    ),
+    ExpandedFluttermojiCardItem(
+      iconAsset: "attributeicons/skin_1.png",
+      title: "Facial Hair",
+      key: "facialHairType",
+      icon: CustomIcon.mustache,
+      color: Colors.black87,
+    ),
+    ExpandedFluttermojiCardItem(
+      iconAsset: "attributeicons/skin_1.png",
+      title: "Facial Hair Colour",
+      key: "facialHairColor",
+      icon: CustomIcon.mustache,
+      color: Colors.black87,
+    ),
+    ExpandedFluttermojiCardItem(
+      iconAsset: "attributeicons/skin_1.png",
+      title: "Outfit",
+      key: "clotheType",
+      icon: CustomIcon.tshirt,
+      color: Colors.black87,
+    ),
+    ExpandedFluttermojiCardItem(
+      iconAsset: "attributeicons/skin_1.png",
+      title: "Outfit Colour",
+      key: "clotheColor",
+      icon: CustomIcon.t_shirt,
+      color: Colors.black87,
+    ),
+    ExpandedFluttermojiCardItem(
+      iconAsset: "attributeicons/skin_1.png",
+      title: "Eyes",
+      key: "eyeType",
+      icon: CustomIcon.visibility,
+      color: Colors.black87,
+    ),
+    ExpandedFluttermojiCardItem(
+      iconAsset: "attributeicons/skin_1.png",
+      title: "Eyebrows",
+      key: "eyebrowType",
+      icon: CustomIcon.eye_color,
+      color: Colors.black87,
+    ),
+    ExpandedFluttermojiCardItem(
+      iconAsset: "attributeicons/skin_1.png",
+      title: "Mouth",
+      key: "mouthType",
+      icon: CustomIcon.lips,
+      color: Colors.black87,
+    ),
+    ExpandedFluttermojiCardItem(
+      iconAsset: "attributeicons/skin_1.png",
+      title: "Glasses",
+      key: "accessoriesType",
+      icon: CustomIcon.glasses,
+      color: Colors.black87,
+    ),
+  ];
+
+  String? seciliGiysiKategori = "skinColor";
+  List<int> seciliGiysiDegerleri = [];
 
   @override
   void initState() {
@@ -45,10 +115,44 @@ class _FluttermojiCustomizerState extends State<FluttermojiCustomizer>
     var _fluttermojiController;
     Get.put(FluttermojiController());
     _fluttermojiController = Get.find<FluttermojiController>();
+    seciliGiysiKategori = attributesListe[0].key;
+    satinAlmalariDondur();
     setState(() {
       tabController = TabController(length: 11, vsync: this);
       fluttermojiController = _fluttermojiController;
     });
+
+    tabController.addListener(() {
+      setState(() {
+        seciliGiysiKategori = attributesListe[tabController.index].key;
+      });
+      satinAlmalariDondur();
+    });
+  }
+
+  void satinAlmalariDondur() {
+    for (var i = 0; i < widget.satinAlinanList.length; i++) {
+      String alinanString = widget.satinAlinanList[i].resimYol;
+
+      if (alinanString.substring(0, 4) != "http" &&
+          alinanString.substring(0, 4) != "asse") {
+        var kategoriKey = alinanString.split(":").first.trim();
+        var kategoriDeger = alinanString.split(":").last.trim();
+
+        if (kategoriKey == seciliGiysiKategori) {
+          try {
+            setState(() {
+              seciliGiysiDegerleri.add(int.parse(kategoriDeger));
+            });
+          } catch (e) {}
+          print(seciliGiysiDegerleri);
+        } else {
+          setState(() {
+            seciliGiysiDegerleri = [];
+          });
+        }
+      }
+    }
   }
 
   @override
@@ -56,6 +160,7 @@ class _FluttermojiCustomizerState extends State<FluttermojiCustomizer>
     // This ensures that unsaved edits are reverted
     fluttermojiController.restoreState();
     super.dispose();
+    tabController.dispose();
   }
 
   /// Widget that renders an expanded layout for customization
@@ -81,95 +186,163 @@ class _FluttermojiCustomizerState extends State<FluttermojiCustomizer>
       }
       var attributeListLength =
           fluttermojiProperties[attribute.key!]!.property!.length;
-      var gridCrossAxisCount = 4;
+      var gridCrossAxisCount = 3;
       int? i = fluttermojiController.selectedIndexes[attribute.key];
       if (attributeListLength < 12)
         gridCrossAxisCount = 3;
       else if (attributeListLength < 9) gridCrossAxisCount = 2;
+      // Widget bottomNavWidget = Padding(
+      //   padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 12),
+      //   child: SvgPicture.asset(
+      //     attribute.iconAsset!,
+      //     package: 'fluttermoji',
+      //     height: (attribute.iconsize == 0)
+      //         ? size.height * 0.05 //0.03
+      //         : attribute.iconsize,
+      //     color: iconColor,
+      //     semanticsLabel: attribute.title,
+      //   ),
+      // );
       Widget bottomNavWidget = Padding(
-          padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 12),
-          child: SvgPicture.asset(
-            attribute.iconAsset!,
-            package: 'fluttermoji',
-            height: (attribute.iconsize == 0)
-                ? widget.scaffoldHeight > 0
-                    ? widget.scaffoldHeight / heightFactor * 0.03
-                    : size.height * 0.03
-                : attribute.iconsize,
-            color: iconColor,
-            semanticsLabel: attribute.title,
-          ));
+        padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 12),
+        child: Icon(
+          attribute.icon!,
+          color: attribute.color!,
+          size: 35,
+        ),
+      );
 
-      Widget _row = Column(children: [
-        Expanded(
-          flex: 2,
-          child: Container(
-            width: double.infinity,
-            color: _appbarcolor,
-            child: Center(
-              child: Text(
-                attribute.title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: widget.scaffoldHeight > 0
-                      ? widget.scaffoldHeight / heightFactor * 0.024
-                      : size.height * 0.024,
-                ),
-                textAlign: TextAlign.center,
-              ),
+      Widget _row = Column(
+        children: [
+          Expanded(
+            // height: size.height*0.25,
+            child: GridView.builder(
+              physics: ClampingScrollPhysics(),
+              itemCount: attributeListLength,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: gridCrossAxisCount,
+                  crossAxisSpacing: 4.0,
+                  mainAxisSpacing: 4.0),
+              itemBuilder: (BuildContext context, int index) {
+                late bool isKilitli;
+                var _kontrolEt = seciliGiysiDegerleri
+                    .where(
+                      (u) => (u.toString().toLowerCase().contains(
+                            index.toString().toLowerCase(),
+                          )),
+                    )
+                    .toList();
+
+                if (_kontrolEt.length == 0) {
+                  isKilitli = true;
+                } else {
+                  isKilitli = false;
+                }
+
+                if (index == i) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.0),
+                      border: Border.all(
+                        color: Colors.green,
+                        width: 3.0,
+                      ),
+                    ),
+                    child: SvgPicture.string(
+                      fluttermojiController.getComponentSVG(attribute.key, i),
+                      height: 20,
+                      semanticsLabel: "Your Fluttermoji",
+                      placeholderBuilder: (context) => Center(
+                        child: CupertinoActivityIndicator(),
+                      ),
+                    ),
+                  );
+                }
+
+                return InkWell(
+                  onTap: () {
+                    fluttermojiController.selectedIndexes[attribute.key] =
+                        index;
+                    fluttermojiController.updatePreview();
+                    setState(() {});
+                  },
+                  child: isKilitli != null
+                      ? Stack(
+                          alignment: AlignmentDirectional.center,
+                          fit: StackFit.expand,
+                          children: [
+                            ColorFiltered(
+                              colorFilter: isKilitli
+                                  ? ColorFilter.mode(
+                                      Colors.black.withOpacity(0.3),
+                                      BlendMode.multiply)
+                                  : ColorFilter.mode(
+                                      Colors.black.withOpacity(0.0),
+                                      BlendMode.multiply,
+                                    ),
+                              child: Container(
+                                color: Colors.grey.shade100,
+                                child: SvgPicture.string(
+                                  fluttermojiController.getComponentSVG(
+                                      attribute.key, index),
+                                  height: 20,
+                                  semanticsLabel: 'Your Fluttermoji',
+                                  placeholderBuilder: (context) => Center(
+                                    child: CupertinoActivityIndicator(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (isKilitli)
+                              Positioned(
+                                top: 2,
+                                right: 1,
+                                child: Icon(
+                                  Icons.lock_outline,
+                                  color: Colors.yellow.shade600,
+                                  size: 30,
+                                ),
+                              ),
+                            if (isKilitli)
+                              Positioned(
+                                bottom: 1,
+                                right: 1,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black87,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  height: 25,
+                                  width: 40,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Text(
+                                        "5",
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Icon(
+                                        CustomIcon.diamond,
+                                        color: Colors.blue.shade400,
+                                        size: 19,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        )
+                      : Container(),
+                );
+              },
             ),
           ),
-        ),
-        Expanded(
-          flex: 11,
-          // height: size.height*0.25,
-          child: GridView.builder(
-            physics: ClampingScrollPhysics(),
-            itemCount: attributeListLength,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: gridCrossAxisCount,
-                crossAxisSpacing: 4.0,
-                mainAxisSpacing: 4.0),
-            itemBuilder: (BuildContext context, int index) {
-              if (index == i) {
-                return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.0),
-                    border: Border.all(
-                      color: Colors.green,
-                      width: 3.0,
-                    ),
-                  ),
-                  child: SvgPicture.string(
-                    fluttermojiController.getComponentSVG(attribute.key, i),
-                    height: 20,
-                    semanticsLabel: "Your Fluttermoji",
-                    placeholderBuilder: (context) => Center(
-                      child: CupertinoActivityIndicator(),
-                    ),
-                  ),
-                );
-              }
-
-              return InkWell(
-                onTap: () {
-                  fluttermojiController.selectedIndexes[attribute.key] = index;
-                  fluttermojiController.updatePreview();
-                  setState(() {});
-                },
-                child: SvgPicture.string(
-                  fluttermojiController.getComponentSVG(attribute.key, index),
-                  height: 20,
-                  semanticsLabel: 'Your Fluttermoji',
-                  placeholderBuilder: (context) => Center(
-                    child: CupertinoActivityIndicator(),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ]);
+        ],
+      );
       attributeRows.add(_row);
       navbarWidgets.add(bottomNavWidget);
     });
@@ -179,79 +352,40 @@ class _FluttermojiCustomizerState extends State<FluttermojiCustomizer>
         Align(
           alignment: Alignment.center,
           child: Container(
-            width: widget.scaffoldWidth > 0
-                ? widget.scaffoldWidth * widthFactor
-                : size.width * widthFactor,
+            width: size.width * widthFactor,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(18)),
             child: DefaultTabController(
               length: attributeRows.length,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(0),
                 child: Scaffold(
                   key: ValueKey('FMojiCustomizer'),
                   backgroundColor: _bgcolor,
-                  body: TabBarView(
-                      physics: ClampingScrollPhysics(),
-                      controller: tabController,
-                      children: attributeRows),
-                  bottomNavigationBar: Container(
-                    color: _appbarcolor, //Colors.grey[400],
-                    child: TabBar(
-                        controller: tabController,
-                        isScrollable: true,
-                        labelPadding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                        indicatorColor: Colors.blue,
-                        indicatorPadding: EdgeInsets.all(2),
-                        tabs: navbarWidgets),
+                  body: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(bottom: 5),
+                        color: _appbarcolor, //Colors.grey[400],
+                        child: TabBar(
+                          controller: tabController,
+                          isScrollable: true,
+                          labelPadding: EdgeInsets.fromLTRB(0, 9, 0, 9),
+                          indicatorColor: Colors.blue,
+                          indicatorPadding: EdgeInsets.all(2),
+                          tabs: navbarWidgets,
+                        ),
+                      ),
+                      Expanded(
+                        child: TabBarView(
+                          physics: ClampingScrollPhysics(),
+                          controller: tabController,
+                          children: attributeRows,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment(0.9, -1),
-          child: Visibility(
-            visible: !(tabController.length == tabController.index + 1),
-            child: IconButton(
-              splashRadius: 20,
-              icon: Icon(
-                Icons.arrow_forward_ios,
-                color: iconColor,
-                size: widget.scaffoldHeight > 0
-                    ? widget.scaffoldHeight / heightFactor * 0.025
-                    : size.height * 0.025,
-              ),
-              onPressed: () {
-                var _currentIndex = tabController.index;
-                tabController.animateTo(_currentIndex < tabController.length
-                    ? _currentIndex + 1
-                    : _currentIndex);
-                setState(() {});
-              },
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment(-0.9, -1),
-          child: Visibility(
-            visible: !(tabController.index == 0),
-            child: IconButton(
-              splashRadius: 20,
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: iconColor,
-                size: widget.scaffoldHeight > 0
-                    ? widget.scaffoldHeight / heightFactor * 0.025
-                    : size.height * 0.025,
-              ),
-              onPressed: () {
-                int _currentIndex = tabController.index;
-                tabController.animateTo(_currentIndex < tabController.length
-                    ? _currentIndex - 1
-                    : _currentIndex);
-                setState(() {});
-              },
             ),
           ),
         ),
@@ -264,95 +398,13 @@ class _FluttermojiCustomizerState extends State<FluttermojiCustomizer>
     var size = MediaQuery.of(context).size;
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     Color? iconColor = (!isDarkMode) ? Colors.grey[700] : Colors.white;
-    return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.outerTitleText,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      fontSize: widget.scaffoldHeight > 0
-                          ? widget.scaffoldHeight / heightFactor * 0.03
-                          : size.height * 0.03,
-                      fontWeight: FontWeight.w700),
-                ),
-                widget.showSaveWidget
-                    ? IconButton(
-                        onPressed: () {
-                          fluttermojiController.setFluttermoji();
-                          setState(() {});
-                        },
-                        icon: Icon(
-                          Icons.save,
-                          color: iconColor,
-                        ),
-                      )
-                    : Container(),
-              ],
-            ),
-          ),
-          Container(
-            height: widget.scaffoldHeight > 0
-                ? widget.scaffoldHeight
-                : size.height * heightFactor,
-            width: widget.scaffoldWidth > 0 ? widget.scaffoldWidth : size.width,
-            child: expandedCard(cardTitle: "Customize", attributes: [
-              /*  ExpandedFluttermojiCardItem(
-                        iconAsset: "attributeicons/hair.svg",
-                        title: "Fluttermoji Style",
-                        key: "style"), */
-              ExpandedFluttermojiCardItem(
-                  iconAsset: "attributeicons/hair.svg",
-                  title: "Hairstyle",
-                  key: "topType"),
-              ExpandedFluttermojiCardItem(
-                  iconAsset: "attributeicons/haircolor.svg",
-                  title: "Hair Colour",
-                  key: "hairColor"),
-              ExpandedFluttermojiCardItem(
-                  iconAsset: "attributeicons/beard.svg",
-                  title: "Facial Hair",
-                  key: "facialHairType"),
-              ExpandedFluttermojiCardItem(
-                  iconAsset: "attributeicons/beardcolor.svg",
-                  title: "Facial Hair Colour",
-                  key: "facialHairColor"),
-              ExpandedFluttermojiCardItem(
-                  iconAsset: "attributeicons/outfit.svg",
-                  title: "Outfit",
-                  key: "clotheType"),
-              ExpandedFluttermojiCardItem(
-                  iconAsset: "attributeicons/outfitcolor.svg",
-                  title: "Outfit Colour",
-                  key: "clotheColor"),
-              ExpandedFluttermojiCardItem(
-                  iconAsset: "attributeicons/eyes.svg",
-                  title: "Eyes",
-                  key: "eyeType"),
-              ExpandedFluttermojiCardItem(
-                  iconAsset: "attributeicons/eyebrow.svg",
-                  title: "Eyebrows",
-                  key: "eyebrowType"),
-              ExpandedFluttermojiCardItem(
-                  iconAsset: "attributeicons/mouth.svg",
-                  title: "Mouth",
-                  key: "mouthType"),
-              ExpandedFluttermojiCardItem(
-                  iconAsset: "attributeicons/skin.svg",
-                  title: "Skin",
-                  key: "skinColor"),
-              ExpandedFluttermojiCardItem(
-                  iconAsset: "attributeicons/accessories.svg",
-                  title: "Glasses",
-                  key: "accessoriesType"),
-            ]),
-          )
-        ]);
+    return Container(
+      height: size.height * heightFactor,
+      width: size.width,
+      child: expandedCard(
+        cardTitle: "Customize",
+        attributes: attributesListe,
+      ),
+    );
   }
 }

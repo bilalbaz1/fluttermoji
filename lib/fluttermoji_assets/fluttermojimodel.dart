@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 /// Maps attribute keys to the attribute value list
 final Map<String, FluttermojiPropertyItem> fluttermojiProperties = {
@@ -27,8 +28,15 @@ class ExpandedFluttermojiCardItem {
   String? key;
   String? iconAsset;
   double iconsize;
+  IconData? icon;
+  Color? color;
   ExpandedFluttermojiCardItem(
-      {this.iconsize = 0, this.title = "Unnamed", this.key, this.iconAsset});
+      {this.iconsize = 0,
+      this.title = "Unnamed",
+      this.key,
+      this.iconAsset,
+      this.color,
+      this.icon});
 }
 
 class FluttermojiPropertyItem extends ChangeNotifier {
